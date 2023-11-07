@@ -1,14 +1,40 @@
 let data;
-// let url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSxIukNpLZUUG3S0-mkUK_K7LmG7kBB95qQi6gRzw2B-IwdSESkcNjrZJ7_gz4DZtzSXRQRRdZ5noT9/pub?gid=0&single=true&output=csv"
 
 let url = "data.csv";
 
 function preload(){
+  const config = {
+    type: 'pie',
+    data: data,
+  };
   data = loadTable(url, 'csv', 'header');
 }
 
 function setup() {
-  createCanvas(600, 600);
+  const data = {
+    label: [
+      'Ages That Play Shooter Games'
+    ],
+    datasets: [{
+      labels: [
+        '16 - 24 Years Old',
+        '25 - 34 Years Old',
+        '35 - 44 Years Old',
+        '45 - 54 Years Old',
+        '55 - 64 Years Old'
+      ],
+      data: [66, 64, 56, 43, 32],
+      backgroundColor: [
+        'rgb(33, 34, 89)',
+        'rgb(63, 21, 97)',
+        'rgb(77, 18, 45)',
+        'rgb(148, 36, 1)',
+        'rgb(56, 115, 54)'
+      ],
+      hoverOffset: 4
+    }]
+  };
+  createCanvas(500, 500);
 }
 
 function draw() {
@@ -18,9 +44,6 @@ function draw() {
     let numRows = data.getRowCount();
     let age = data.getColumn('16-24YearsOld');
     let age2 = data.getColumn('25-34YearsOld');
-    let age3 = data.getColumn('35-44YearsOld');
-    let age4 = data.getColumn('45-54YearsOld');
-    let age5 = data.getColumn('55-64YearsOld');
     let names = data.getColumn('Catagory');
 
     for (let i = 0; i < numRows; i++){
@@ -28,20 +51,20 @@ function draw() {
       let y = 100 + i*50; //16-24
       let w = age[i]*5;
       let w1 = age2[i]*5;
-      let w2 = age3[i]*5;
       let h = 10;
       let y1 = 110 + i*50; //25-34
-      // let y2 = 120 + i*50; //35-44
+  
 
       fill(255);
       textSize(20);
-      text(names[i], x, y - 3);
+      text(names[i], x, y - 4.5);
 
+      fill(80, 41, 97);
       rect(x, y, w, h);
 
+      fill(49, 47, 168);
       rect(x, y1, w1, h);
 
-      // rect(x, y2, w, h);
     }
   }
 }
