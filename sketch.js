@@ -1,70 +1,81 @@
-let data;
+let song;
+let playButton;
+let changeButton;
+const songs = [];
 
-let url = "data.csv";
+function preload() {
+  songs.push(loadSound("Bring Me The Horizon - DArkSide (Lyric Video).mp3"));
+  songs.push(loadSound("Lord Huron-The Night We Met Official Audio.mp3"));
+  songs.push(loadSound("Avengers.mp3"));
+  songs.push(loadSound("BarbieGirl.mp3"));
+  songs.push(loadSound("DetroitRockCity.mp3"));
+  songs.push(loadSound("GOLDENHOURS.mp3"));
+  songs.push(loadSound("SayMyName.mp3"));
+  songs.push(loadSound("SlippingThroughMyFingers.mp3")); //instrumental only
+  songs.push(loadSound("WalkingOnSunshine.mp3"));
+  songs.push(loadSound("WonderPets.mp3"));
 
-function preload(){
-  const config = {
-    type: 'pie',
-    data: data,
-  };
-  data = loadTable(url, 'csv', 'header');
 }
 
 function setup() {
-  const data = {
-    label: [
-      'Ages That Play Shooter Games'
-    ],
-    datasets: [{
-      labels: [
-        '16 - 24 Years Old',
-        '25 - 34 Years Old',
-        '35 - 44 Years Old',
-        '45 - 54 Years Old',
-        '55 - 64 Years Old'
-      ],
-      data: [66, 64, 56, 43, 32],
-      backgroundColor: [
-        'rgb(33, 34, 89)',
-        'rgb(63, 21, 97)',
-        'rgb(77, 18, 45)',
-        'rgb(148, 36, 1)',
-        'rgb(56, 115, 54)'
-      ],
-      hoverOffset: 4
-    }]
-  };
-  createCanvas(500, 500);
+  createCanvas(900, 650);
+
+  // begining amplitude
+  amplitude = new p5.Amplitude();
+
+  // load first song
+  song = songs[0];
+
+  // buttons
+  playButton = createButton("Play");
+  playButton.mousePressed(togglePlaying);
+
+  changeButton = createButton("Change Song");
+  changeButton.mousePressed(changeSong);
+}
+
+function togglePlaying() {
+  if (!song.isPlaying()) {
+    song.play();
+    song.setVolume(0.3);
+    playButton.html("Pause");
+  } else {
+    song.pause();
+    playButton.html("Play");
+  }
+}
+
+function changeSong() {
+  // Stop the current song
+  song.stop();
+
+  // Change the song
+  let currentSongIndex = songs.indexOf(song);
+  currentSongIndex = (currentSongIndex + 1) % songs.length;
+  song = songs[currentSongIndex];
+
+  // Play the new song
+  song.play();
 }
 
 function draw() {
   background(0);
 
-  if (data) {
-    let numRows = data.getRowCount();
-    let age = data.getColumn('16-24YearsOld');
-    let age2 = data.getColumn('25-34YearsOld');
-    let names = data.getColumn('Catagory');
+  // Get the current volume (amplitude) of the song
+  let vol = amplitude.getLevel();
 
-    for (let i = 0; i < numRows; i++){
-      let x = 0;
-      let y = 100 + i*50; //16-24
-      let w = age[i]*5;
-      let w1 = age2[i]*5;
-      let h = 10;
-      let y1 = 110 + i*50; //25-34
+  // Map the volume to a range suitable for visual elements
+  let diameter = map(vol, 0, 1, 10, 200);
+
+  //square changes shape to size based on music
+  fill(16, 64, 176);
+  square(width / 2.5, height/ 2.5, diameter, diameter*10);
+
+  //rectangle changing shape to size based on music
+  fill(3, 194, 252);
+  rect(width / 3, height / 3, diameter, diameter * 10);
   
-
-      fill(255);
-      textSize(20);
-      text(names[i], x, y - 4.5);
-
-      fill(80, 41, 97);
-      rect(x, y, w, h);
-
-      fill(49, 47, 168);
-      rect(x, y1, w1, h);
-
-    }
-  }
+  // Draw a circle that changes size based on the music volume
+  fill(255, 0, 0); // Red color
+  ellipse(width / 2, height / 2, diameter, diameter * 10); // Adjusted for better visibility
 }
